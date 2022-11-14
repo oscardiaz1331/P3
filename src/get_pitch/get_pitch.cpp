@@ -76,7 +76,11 @@ int main(int argc, const char *argv[]) {
         x[i]=0;
     }
   }
-  for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
+  // Iterate for each frame and save values in f0 vector
+  vector<float>::iterator iX;
+  vector<float> f0;
+   int i=0;
+  for (iX = x.begin(); iX + n_len < x.end(); iX = iX + n_shift, i = i + n_shift) {
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
         if(x[j+i]>valormax){
@@ -89,11 +93,6 @@ int main(int argc, const char *argv[]) {
         x[i+j]=0;
       }
     }
-  }
-  // Iterate for each frame and save values in f0 vector
-  vector<float>::iterator iX;
-  vector<float> f0;
-  for (iX = x.begin(); iX + n_len < x.end(); iX = iX + n_shift) {
     float f = analyzer(iX, iX + n_len);
     f0.push_back(f);
   }
