@@ -69,14 +69,15 @@ int main(int argc, const char *argv[]) {
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   /// central-clipping
-  auto it = *max_element(x.begin(), x.end());
-  float umbral=0.01*it;
-  for (int i=0; i < int(x.size()-1); i++) {
-    if((umbral*-1<x[i]) && (x[i]<umbral)){
-        x[i]=0;
+  float maxel = *max_element(x.begin(), x.end());
+  float umbral=0.01*maxel;
+  vector<float>::iterator iR;
+   for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+    if((umbral*-1<*iR) && (*iR<umbral)){
+        *iR=0;
     }
-  }
-  for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
+  } 
+   for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
         if(x[j+i]>valormax){
@@ -89,7 +90,7 @@ int main(int argc, const char *argv[]) {
         x[i+j]=0;
       }
     }
-  }
+  } 
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;
@@ -103,13 +104,15 @@ int main(int argc, const char *argv[]) {
   /// or time-warping may be used.
   /// median filter
   vector<float> f0mediana;
+  f0mediana=f0;
   f0mediana.begin()=f0.begin();
-  //for(int j = 1; j< int(f0.size())-2; j++){
-  //  if((f0[j-1]<=f0[j] and f0[j]<=f0[j+1]) or (f0[j+1]<=f0[j] and f0[j]<=f0[j-1])) f0mediana[j]=f0[j];
-  //  if((f0[j]<=f0[j-1] and f0[j-1]<=f0[j+1])or (f0[j+1]<=f0[j-1] and f0[j-1]<=f0[j])) f0mediana[j]=f0[j-1];
-  //  if((f0[j-1]<=f0[j+1] and f0[j+1]<=f0[j]) or (f0[j]<=f0[j+1] and f0[j+1]<=f0[j-1])) f0mediana[j]=f0[j+1];
-  //}
-  //f0mediana[int(f0.size())-1]=f0[int(f0.size())-1];
+  int j=1;
+  for(iR=f0.begin()+1; iR< f0.end()-1;iR = iR + 1,j=j+1){
+    if((*(iR-1)<=*(iR) and *(iR)<=*(iR+1)) or (*(iR+1)<=*iR and *iR<=*(iR-1))) f0mediana[j]=*iR;
+    else if((*iR<=*(iR-1) and *(iR-1)<=*(iR+1))or (*(iR+1)<=*(iR-1) and *(iR-1)<=*iR)) f0mediana[j]=*(iR-1);
+    else if((*(iR-1)<=*(iR+1) and *(iR+1)<=*iR) or (*iR<=*(iR+1) and *(iR+1)<=*(iR-1))) f0mediana[j]=*(iR+1);
+  }
+  f0mediana.end()=f0.end();
 
   // Write f0 contour into the output file
   ofstream os(output_txt);
@@ -119,7 +122,7 @@ int main(int argc, const char *argv[]) {
   }
 
   os << 0 << '\n'; //pitch at t=0
-  for (iX = f0.begin(); iX != f0.end(); ++iX) 
+  for (iX = f0mediana.begin(); iX != f0mediana.end(); ++iX) 
     os << *iX << '\n';
   os << 0 << '\n';//pitch at t=Dur
 
