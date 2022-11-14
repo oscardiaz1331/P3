@@ -14,10 +14,29 @@ Ejercicios básicos
   `get_pitch`.
 
    * Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
+        
+      void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
+        for (unsigned int l = 0; l < r.size(); ++l) {
+          /// \TODO Compute the autocorrelation r[l]
+          /// - Inicializamos la autocorrelación a cero
+          /// - Añadimos el producto 
+          /// - Normalizamos con la duración
+          /// 
+          /// *** Amazing! ***
+          for (unsigned int n = 0; n < x.size(); ++n){
+            r[l]=r[l]+x[n]*x[n+l];
+          }
+          r[l]=r[l]/x.size();//revisar
+        }
+        if (r[0] == 0.0F) //to avoid log() and divide zero 
+          r[0] = 1e-10; 
+      }
 
    * Inserte una gŕafica donde, en un *subplot*, se vea con claridad la señal temporal de un segmento de
      unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro *subplot*, se vea con claridad la
 	 autocorrelación de la señal y la posición del primer máximo secundario.
+
+
 
 	 NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
 	 hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
@@ -25,7 +44,17 @@ Ejercicios básicos
    * Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
      autocorrelación. Inserte a continuación el código correspondiente.
 
+
+
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
+
+      bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
+        /// \TODO Implement a rule to decide whether the sound is voiced or not.
+        /// * You can use the standard features (pot, r1norm, rmaxnorm),
+        ///   or compute and use other ones.
+        if((rmaxnorm>umaxnorm) or (r1norm>u1norm) or (upot<pot)) return false;
+        return true;
+      }
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
@@ -75,7 +104,19 @@ Ejercicios de ampliación
   Entre las posibles mejoras, puede escoger una o más de las siguientes:
 
   * Técnicas de preprocesado: filtrado paso bajo, diezmado, *center clipping*, etc.
+
+    /// central-clipping
+    auto it = *max_element(x.begin(), x.end());
+    float umbral=0.01*it;
+    for (int i=0; i < int(x.size()-1); i++) {
+      if((umbral*-1<x[i]) && (x[i]<umbral)){
+          x[i]=0;
+    }
+
   * Técnicas de postprocesado: filtro de mediana, *dynamic time warping*, etc.
+
+
+
   * Métodos alternativos a la autocorrelación: procesado cepstral, *average magnitude difference function*
     (AMDF), etc.
   * Optimización **demostrable** de los parámetros que gobiernan el estimador, en concreto, de los que

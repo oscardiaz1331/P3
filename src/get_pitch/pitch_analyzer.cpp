@@ -12,6 +12,16 @@ namespace upc {
 
     for (unsigned int l = 0; l < r.size(); ++l) {
   		/// \TODO Compute the autocorrelation r[l]
+      /// \HECHO Autocorrelación completada
+      /// - Inicializamos la autocorrelación a cero
+      /// - Añadimos el producto 
+      /// - Normalizamos con la duración
+      /// 
+      /// *** Amazing! ***
+      for (unsigned int n = 0; n < x.size(); ++n){
+        r[l]=r[l]+x[n]*x[n+l];
+      }
+      r[l]=r[l]/x.size();//revisar
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -27,6 +37,10 @@ namespace upc {
     switch (win_type) {
     case HAMMING:
       /// \TODO Implement the Hamming window
+      /// \HECHO 
+      for(unsigned int i=0;i<frameLen;i++){
+        window[i]=0.53836-0.46164*cos(2*M_PI*i/(frameLen-1));
+      }
       break;
     case RECT:
     default:
@@ -50,6 +64,7 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
+    if((rmaxnorm>umaxnorm) or (r1norm>u1norm) or (upot<pot)) return false;
     return true;
   }
 
@@ -75,6 +90,12 @@ namespace upc {
 	///    - The lag corresponding to the maximum value of the pitch.
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
+ 
+    for(iRMax=iR=r.begin()+npitch_min;iR<r.begin()+npitch_max;iR++){
+        if(*iR>*iRMax){
+          iRMax=iR;
+        }
+    }
 
     unsigned int lag = iRMax - r.begin();
 
