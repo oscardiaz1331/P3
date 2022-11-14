@@ -103,7 +103,7 @@ int main(int argc, const char *argv[]) {
   /// or time-warping may be used.
   /// median filter
   vector<float> f0mediana;
-  f0mediana[0]=f0[0];
+  f0mediana.begin()=f0.begin();
   //for(int j = 1; j< int(f0.size())-2; j++){
   //  if((f0[j-1]<=f0[j] and f0[j]<=f0[j+1]) or (f0[j+1]<=f0[j] and f0[j]<=f0[j-1])) f0mediana[j]=f0[j];
   //  if((f0[j]<=f0[j-1] and f0[j-1]<=f0[j+1])or (f0[j+1]<=f0[j-1] and f0[j-1]<=f0[j])) f0mediana[j]=f0[j-1];
