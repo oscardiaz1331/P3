@@ -25,9 +25,9 @@ Usage:
     get_pitch --version
 
 Options:
-    -m REAL, --umaxnorm=REAL    Umbral del maximo de la autocorrelacion [default: 0.6]
+    -m REAL, --umaxnorm=REAL    Umbral del maximo de la autocorrelacion [default: 0.4]
     -n REAL, --u1norm=REAL      Umbral 1norm [default: 1]
-    -p REAL, --upot=REAL        Umbral potencia [default: 6]
+    -p REAL, --upot=REAL        Umbral potencia [default: -30]
     -h, --help  Show this screen
     --version   Show the version of the project
 
