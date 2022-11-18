@@ -1,14 +1,13 @@
-from cmath import log10
-#import matplotlib.pyplot as plt
-import soundfile as sf
-import numpy as np
-
-from wave import WAVE_FORMAT_PCM
 import wave
+from cmath import log10
+from wave import WAVE_FORMAT_PCM
+
 ##import statsmodels.api as sm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+#import matplotlib.pyplot as plt
+import soundfile as sf
 
 #audio = "pureba.wav"
 #llegim el fitxer de veu de prueba.wav
