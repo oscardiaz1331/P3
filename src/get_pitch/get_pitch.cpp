@@ -25,9 +25,11 @@ Usage:
     get_pitch --version
 
 Options:
-    -m REAL, --umaxnorm=REAL    Umbral del maximo de la autocorrelacion [default: 0.6]
+    -m REAL, --umaxnorm=REAL    Umbral del maximo de la autocorrelacion [default: 0.4]
     -n REAL, --u1norm=REAL      Umbral 1norm [default: 1]
-    -p REAL, --upot=REAL        Umbral potencia [default: 6]
+    -p REAL, --upot=REAL        Umbral potencia [default: -30]
+    -u FLOAT, --coef1=FLOAT          Coeficiente para el clipping de la imagen total [default: 0.01]
+    -v FLOAT, --coef2=FLOAT           Coeficiente para el clipping de la trama [default: 0.2]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -52,6 +54,8 @@ int main(int argc, const char *argv[]) {
   float umaxnorm = stof(args["--umaxnorm"].asString());
   float upot=stof(args["--upot"].asString());
   float u1norm =stof(args["--u1norm"].asString());
+  float coef1=stof(args["--coef1"].asString());
+  float coef2=stof(args["--coef2"].asString());
   // Read input sound file
   unsigned int rate;
   vector<float> x;
@@ -70,13 +74,13 @@ int main(int argc, const char *argv[]) {
   /// central-clipping or low pass filtering may be used.
   /// central-clipping
   float maxel = *max_element(x.begin(), x.end());
-  float umbral=0.01*maxel;
+  float umbral=coef1*maxel;
   vector<float>::iterator iR;
-   for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+   /* for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
     if((umbral*-1<*iR) && (*iR<umbral)){
         *iR=0;
     }
-  } 
+  }  */
    for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
@@ -84,12 +88,12 @@ int main(int argc, const char *argv[]) {
           valormax=x[j+i];
         }
     }
-    float umbral2=0.2*valormax;
-    for(int j=0;j<n_len;j++){
+    float umbral2=coef2*valormax;
+    /* for(int j=0;j<n_len;j++){
       if((umbral2*-1<x[i+j]) and (x[i+j]<umbral2)){
         x[i+j]=0;
       }
-    }
+    } */
   } 
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
