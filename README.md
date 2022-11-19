@@ -19,10 +19,7 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
     unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro _subplot_, se vea con claridad la
     autocorrelación de la señal y la posición del primer máximo secundario.
 
-
-
-
-
+    <img src="rxx.png" width="640" align="center">
 
   NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
   hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
@@ -95,10 +92,14 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
   - Técnicas de preprocesado: filtrado paso bajo, diezmado, _center clipping_, etc.
 
     <img src="im4.png" width="640" align="center">
+
+    <img src="clip.png" width="640" align="center">
     
   - Técnicas de postprocesado: filtro de mediana, _dynamic time warping_, etc.
 
     <img src="im5.png" width="640" align="center">
+
+    <img src="mediana.png" width="640" align="center">
 
   - Métodos alternativos a la autocorrelación: procesado cepstral, _average magnitude difference function_
     (AMDF), etc.
@@ -114,7 +115,6 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
   inclusión de gráficas, tablas, código o cualquier otra cosa que ayude a comprender el trabajo realizado.
 
   - El resultado obtenido aplicando estas dos técnicas es el siguiente:
-
 
   <img src="summary2.png" width="640" align="center">
 
