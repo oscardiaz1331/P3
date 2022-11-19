@@ -67,15 +67,9 @@ namespace upc {
     ///  (rmaxnorm>umaxnorm) or (r1norm<u1norm) or (upot<pot)
     /// if((rmaxnorm>umaxnorm)) return false; 87.41% --> 0.55
     /// if((r1norm>u1norm)) return false; 83.11% --> 0.85
-    if((rmaxnorm>umaxnorm)){
-        if((r1norm>u1norm)){
-            if((upot<pot)){
-              return true;
-            }
-            return false;
-        }
-        return true;
-    } 
+    if((rmaxnorm>umaxnorm) && (r1norm>u1norm)) return false;
+    else if((rmaxnorm>umaxnorm) && (upot<pot)) return false; 
+    else if((r1norm>u1norm) && (upot<pot)) return false;
     return true;
   }
 

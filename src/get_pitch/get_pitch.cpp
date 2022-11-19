@@ -15,7 +15,7 @@
 
 using namespace std;
 using namespace upc;
-
+//0.4 0.86 -36 0.064 0.163
 static const char USAGE[] = R"(
 get_pitch - Pitch Estimator 
 
@@ -26,10 +26,10 @@ Usage:
 
 Options:
     -m REAL, --umaxnorm=REAL    Umbral del maximo de la autocorrelacion [default: 0.4]
-    -n REAL, --u1norm=REAL      Umbral 1norm [default: 1]
-    -p REAL, --upot=REAL        Umbral potencia [default: -30]
-    -u FLOAT, --coef1=FLOAT          Coeficiente para el clipping de la imagen total [default: 0.01]
-    -v FLOAT, --coef2=FLOAT           Coeficiente para el clipping de la trama [default: 0.2]
+    -n REAL, --u1norm=REAL      Umbral 1norm [default: 0.86]
+    -p REAL, --upot=REAL        Umbral potencia [default: -36]
+    -u FLOAT, --coef1=FLOAT          Coeficiente para el clipping de la imagen total [default: 0.064]
+    -v FLOAT, --coef2=FLOAT           Coeficiente para el clipping de la trama [default: 0.163]
     -h, --help  Show this screen
     --version   Show the version of the project
 
@@ -73,14 +73,15 @@ int main(int argc, const char *argv[]) {
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   /// central-clipping
+  vector<float>::iterator iR;
   float maxel = *max_element(x.begin(), x.end());
   float umbral=coef1*maxel;
-  vector<float>::iterator iR;
-   /* for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+  
+   for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
     if((umbral*-1<*iR) && (*iR<umbral)){
         *iR=0;
     }
-  }  */
+  } 
    for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
@@ -89,12 +90,12 @@ int main(int argc, const char *argv[]) {
         }
     }
     float umbral2=coef2*valormax;
-    /* for(int j=0;j<n_len;j++){
+    for(int j=0;j<n_len;j++){
       if((umbral2*-1<x[i+j]) and (x[i+j]<umbral2)){
         x[i+j]=0;
       }
-    } */
-  } 
+    }
+  }
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;

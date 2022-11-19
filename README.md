@@ -38,6 +38,9 @@ Ejercicios básicos
 
 
 
+
+
+
 	 NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
 	 hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
 
@@ -46,14 +49,32 @@ Ejercicios básicos
 
 
 
+
+
+
+      vector<float>::const_iterator iR = r.begin(), iRMax = iR;
+      /// Find the lag of the maximum value of the autocorrelation away from the origin.<br>
+      /// Choices to set the minimum value of the lag are:
+      ///    - The first negative value of the autocorrelation.
+      ///    - The lag corresponding to the maximum value of the pitch.
+      ///	   .
+      /// In either case, the lag should not exceed that of the minimum value of the pitch.
+        for(iRMax=iR=r.begin()+npitch_min;iR<r.begin()+npitch_max;iR++){
+            if(*iR>*iRMax){
+              iRMax=iR;
+            }
+        }
+
    * Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
 
       bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
         /// \TODO Implement a rule to decide whether the sound is voiced or not.
         /// * You can use the standard features (pot, r1norm, rmaxnorm),
         ///   or compute and use other ones.
-        if((rmaxnorm>umaxnorm) or (r1norm>u1norm) or (upot<pot)) return false;
-        return true;
+        if((rmaxnorm>umaxnorm) && (r1norm>u1norm)) return false;
+        else if((rmaxnorm>umaxnorm) && (upot<pot)) return false; 
+        else if((r1norm>u1norm) && (upot<pot)) return false;
+        else return true;
       }
 
    * Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
@@ -69,6 +90,11 @@ Ejercicios básicos
 		(r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
 		autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
 
+
+
+
+
+
 		Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
 	    Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
@@ -78,12 +104,22 @@ Ejercicios básicos
 	    su resultado con el obtenido por la mejor versión de su propio sistema.  Inserte una gráfica
 		ilustrativa del resultado de ambos estimadores.
      
+
+
+
+
+
+
 		Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
 	 	el uso de alternativas de mayor calidad (particularmente Python).
   
   * Optimice los parámetros de su sistema de estimación de pitch e inserte una tabla con las tasas de error
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
+
+    <img src="img/summary1.png" width="640" align="center">
+
+
 
 Ejercicios de ampliación
 ------------------------
@@ -98,6 +134,10 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
+    <img src="img/imagenayuda.png" width="640" align="center">
+
+    <img src="img/imagenayuda2.png" width="640" align="center">
+
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación
   de pitch.
 
@@ -105,17 +145,44 @@ Ejercicios de ampliación
 
   * Técnicas de preprocesado: filtrado paso bajo, diezmado, *center clipping*, etc.
 
-    /// central-clipping
-    auto it = *max_element(x.begin(), x.end());
-    float umbral=0.01*it;
-    for (int i=0; i < int(x.size()-1); i++) {
-      if((umbral*-1<x[i]) && (x[i]<umbral)){
-          x[i]=0;
+    /// center clipping
+    vector<float>::iterator iR;
+    float maxel = *max_element(x.begin(), x.end());
+    float umbral=coef1*maxel;
+    
+    for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+      if((umbral*-1<*iR) && (*iR<umbral)){
+          *iR=0;
+      }
+    } 
+    for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
+      float valormax=x[i];
+      for(int j=0;j<n_len;j++){
+          if(x[j+i]>valormax){
+            valormax=x[j+i];
+          }
+      }
+      float umbral2=coef2*valormax;
+      for(int j=0;j<n_len;j++){
+        if((umbral2*-1<x[i+j]) and (x[i+j]<umbral2)){
+          x[i+j]=0;
+        }
+      }
     }
 
   * Técnicas de postprocesado: filtro de mediana, *dynamic time warping*, etc.
 
-
+    /// filtro de mediana
+    vector<float> f0mediana;
+    f0mediana=f0;
+    f0mediana.begin()=f0.begin();
+    int j=1;
+    for(iR=f0.begin()+1; iR< f0.end()-1;iR = iR + 1,j=j+1){
+      if((*(iR-1)<=*(iR) and *(iR)<=*(iR+1)) or (*(iR+1)<=*iR and *iR<=*(iR-1))) f0mediana[j]=*iR;
+      else if((*iR<=*(iR-1) and *(iR-1)<=*(iR+1))or (*(iR+1)<=*(iR-1) and *(iR-1)<=*iR)) f0mediana[j]=*(iR-1);
+      else if((*(iR-1)<=*(iR+1) and *(iR+1)<=*iR) or (*iR<=*(iR+1) and *(iR+1)<=*(iR-1))) f0mediana[j]=*(iR+1);
+    }
+    f0mediana.end()=f0.end();
 
   * Métodos alternativos a la autocorrelación: procesado cepstral, *average magnitude difference function*
     (AMDF), etc.
@@ -129,6 +196,10 @@ Ejercicios de ampliación
 
   Incluya, a continuación, una explicación de las técnicas incorporadas al estimador. Se valorará la
   inclusión de gráficas, tablas, código o cualquier otra cosa que ayude a comprender el trabajo realizado.
+
+  El resultado obtenido aplicando estas dos técnicas es el siguiente:
+
+  <img src="img/summary2.png" width="640" align="center">
 
   También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
