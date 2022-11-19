@@ -13,103 +13,113 @@ read_wave_auto=read_wave[int(fm*0.33):int(fm*0.33+fm*0.03)]
 time = (np.linspace(start=0, stop = (len(read_wave_auto)-1), num = len(read_wave_auto)))/fm 
 #Calculamos el vector de tiempo para las gráficas
 
+#Calculamos la autocorrelación de la señal recortada
 autocorrelacio = np.correlate(read_wave_auto, read_wave_auto, "full")
 autocorrelacio = autocorrelacio/autocorrelacio[int(len(autocorrelacio)/2)]
-#ens quedem només amb la primera meitat 
 autocorrelacio = autocorrelacio[int(len(autocorrelacio)/2):]
 
-#generem el eix x que sigui igual de llarg que la longitud de l'autocorrelació en mostres
+#Creamos el vector espacial para representar la autocorrelación
 xautocorrelacio = np.arange(len(autocorrelacio))
-#plt.xscale("log")
-#fem la gràfica de la senyal sola
+
+#Subplot1 con la amplitud de la señal.
 plt.subplot(2,1,1)
 plt.title("Señal temporal")
 plt.ylabel("Amplitud")
 plt.plot(time,read_wave_auto)
-
-#fem la gràfica de l'autocorrelació
+#Subplot2 con la autocorrelación de la señal.
 plt.subplot(2,1,2)
 plt.title("Autocorrelación de la señal de voz")
 plt.xlabel("Muestras")
 plt.ylabel("Autocorrelación")
 plt.plot(xautocorrelacio, autocorrelacio)
-#Ho mostrem
 plt.show()
-rxx0=[]
+
+
+##Gráficas de la potencia, rx[1]/rx[0], rx[lag]/rx[0]
+pot=[]
 rxx1=[]
-rxxmax=[]
-#for i in range(0,len(read_wave)-1,int(fm*0.015)):
-#    read_wave_auto=read_wave[int(fm*i):int(fm*i+fm*0.03)]
-#    rxx = np.correlate(read_wave_auto, read_wave_auto, "same")
-#    rxx = rxx/rxx[int(len(rxx)/2)]
-#    rxx0.append(rxx[0])
-#    rxx1.append(rxx[1]/rxx[0])
-#    rxxmax.append((np.max(rxx)-rxx[0])/rxx[0])
-#    ntramas=i
+rxxlag=[]
+#Abrimos, leemos y cerramos el fichero con los datos guardados.
+f=open("ficheropotrxx01.txt","r")
+info=f.read()
+f.close()
+#Separamos la información por filas
+filas=info.split("\n")
+for i in filas:
+    #Separamos las filas para guardar cada variable en su vector
+    temp=i.split("\t")
+    pot.append(float(temp[0]))
+    rxx1.append(float(temp[1]))
+    rxxlag.append(float(temp[2]))
+numtramas=range(len(filas))
 
-#plt.subplot(3,1,1)
-#plt.title("Senyal temporal")
-#plt.xlabel("Temps (s)")
-#plt.ylabel("Amplitud")
-#plt.plot(i,rxx0)
-
-#fem la gràfica de l'autocorrelació
-#plt.subplot(3,1,3)
-#plt.title("Autocorrelació de la senyal de veu")
-#plt.xlabel("Mostres")
-#plt.ylabel("Autocorrelació")
-#plt.plot(i,rxx1)
-#plt.subplot(3,1,3)
-#plt.title("Autocorrelació de la senyal de veu")
-#plt.xlabel("Mostres")
-#plt.ylabel("Autocorrelació")
-#plt.plot(i,rxxmax)
-#Ho mostrem
-#plt.show()
+#Subplot de la potencia
+plt.subplot(3,1,1)
+plt.title("Potencia")
+plt.xlabel("Tramas")
+plt.ylabel("Potencia [dB]")
+plt.plot(numtramas,pot)
+#Subplot de Rx[1]/Rx[0]
+plt.subplot(3,1,2)
+plt.title("Rx[1]/Rx[0]")
+plt.xlabel("Tramas")
+plt.plot(numtramas,rxx1)
+#Subplot de Rx[Lag]/Rx[0]
+plt.subplot(3,1,3)
+plt.title("Rx[Lag]/Rx[0]")
+plt.xlabel("Tramas")
+plt.plot(numtramas,rxxlag)
+plt.show()
 
 
 ##Central clipping
+#Creamos el vector temporal de toda la señal.
 temps = (np.linspace(start=0, stop = (len(read_wave)-1), num = len(read_wave)))/fm 
-coef1=0.060
-umbral=coef1*1
+#Definimos el umbral del clipping, este ha sido escogido para una buena visualización del efecto que tiene
+umbral=0.06
+#Creamos una lista con los datos de la señal para una fácil manipulación
 wave_clip=list(read_wave)
 for i in range(len(read_wave)-1):
+    #Si la señal en valor absoluto se encuentra por debajo del umbral, la ponemos a cero.
     if -umbral<wave_clip[i]<umbral:
         wave_clip[i]=0
+#Subplot para la señal original
 plt.subplot(2,1,1)
 plt.title("Señal original")
 plt.ylabel("Amplitud")
 plt.plot(temps, read_wave)
-
-#fem la gràfica de l'autocorrelació
+#Subplot para la señal procesada con el central clipping a 0.6
 plt.subplot(2,1,2)
 plt.title("Señal con el central clipping")
 plt.xlabel("Tiempo (s)")
 plt.ylabel("Amplitud")
 plt.plot(temps, wave_clip)
-#Ho mostrem
 plt.show()
 
 
 ##Mediana
-
+#Creamos un vector de f0 para trabajar.
 f0=[25,50,50,50,100,100,150,100,75,100,100,150,150,150,100,100,125,150,125,100,100,100,50,75,50,75,100,100,120]
 f0_mediana=[]
+#Añadimos la primera muestra
 f0_mediana.append(f0[0])
-print(f0_mediana)
-for i in range(1,len(f0)-2):
+#Para todo el vector, miramos cual es el valor mediano entre la muestra actual, la anterior y la posterior
+#Será la mediana (central en orden creciente/decreciente) la que guardaremos en el vector procesado.
+for i in range(1,len(f0)-1):
     if f0[i-1]<=f0[i]<=f0[i+1] or f0[i+1]<=f0[i]<=f0[i-1]:
         f0_mediana.append(f0[i])
     elif f0[i]<=f0[i-1]<=f0[i+1] or f0[i+1]<=f0[i-1]<=f0[i]:
         f0_mediana.append(f0[i-1])
     elif f0[i-1]<f0[i+1]<=f0[i] or f0[i]<=f0[i+1]<f0[i-1]:
         f0_mediana.append(f0[i+1])
-f0_mediana.append(f0[len(f0)-2])
+#Añadimos la última muestra
 f0_mediana.append(f0[len(f0)-1])
+#Subplot con la señal original
 plt.subplot(2,1,1)
 plt.title("Señal original")
 plt.ylabel("F0")
 plt.plot(range(len(f0)),f0)
+#Subplot con la señal procesada
 plt.subplot(2,1,2)
 plt.title("Con filtro mediana")
 plt.xlabel("Tramas")

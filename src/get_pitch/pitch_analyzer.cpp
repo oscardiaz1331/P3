@@ -38,6 +38,7 @@ namespace upc {
     case HAMMING:
       /// \TODO Implement the Hamming window
       /// \HECHO 
+      /// \Hemos creado la ventana de Hamming
       for(unsigned int i=0;i<frameLen;i++){
         window[i]=0.53836-0.46164*cos(2*M_PI*i/(frameLen-1));
       }
@@ -64,6 +65,7 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
+    /// \HECHO. Miramos que se cumplan por lo menos que dos de los umbrales sean menores para devolver false.
     if((rmaxnorm>umaxnorm) && (r1norm>u1norm)) return false;
     else if((rmaxnorm>umaxnorm) && (upot<pot)) return false; 
     else if((r1norm>u1norm) && (upot<pot)) return false;
@@ -92,7 +94,7 @@ namespace upc {
 	///    - The lag corresponding to the maximum value of the pitch.
     ///	   .
 	/// In either case, the lag should not exceed that of the minimum value of the pitch.
- 
+  /// \HECHO 
     for(iRMax=iR=r.begin()+npitch_min;iR<r.begin()+npitch_max;iR++){
         if(*iR>*iRMax){
           iRMax=iR;
@@ -106,6 +108,7 @@ namespace upc {
     //You can print these (and other) features, look at them using wavesurfer
     //Based on that, implement a rule for unvoiced
     //change to #if 1 and compile
+    //Ya usado en el fichero python, creando el archivo: ficheropotrxx01.txt
 #if 0
     if (r[0] > 0.0F)
       cout << pot << '\t' << r[1]/r[0] << '\t' << r[lag]/r[0] << endl;
