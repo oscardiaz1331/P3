@@ -117,7 +117,7 @@ Ejercicios básicos
     y el *score* TOTAL proporcionados por `pitch_evaluate` en la evaluación de la base de datos 
 	`pitch_db/train`..
 
-    <img src="img/summary1.png" width="640" align="center">
+    <img src="summary1.png" width="640" align="center">
 
 
 
@@ -134,9 +134,9 @@ Ejercicios de ampliación
   * Inserte un *pantallazo* en el que se vea el mensaje de ayuda del programa y un ejemplo de utilización
     con los argumentos añadidos.
 
-    <img src="img/imagenayuda.png" width="640" align="center">
+    <img src="imagenayuda.png" width="640" align="center">
 
-    <img src="img/imagenayuda2.png" width="640" align="center">
+    <img src="imagenayuda2.png" width="640" align="center">
 
 - Implemente las técnicas que considere oportunas para optimizar las prestaciones del sistema de estimación
   de pitch.
@@ -199,7 +199,7 @@ Ejercicios de ampliación
 
   El resultado obtenido aplicando estas dos técnicas es el siguiente:
 
-  <img src="img/summary2.png" width="640" align="center">
+  <img src="summary2.png" width="640" align="center">
 
   También se valorará la realización de un estudio de los parámetros involucrados. Por ejemplo, si se opta
   por implementar el filtro de mediana, se valorará el análisis de los resultados obtenidos en función de
