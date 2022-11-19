@@ -119,7 +119,7 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
 
   - Técnicas de preprocesado: filtrado paso bajo, diezmado, _center clipping_, etc.
 
-    /// center clipping
+    /// center clipping "\n"
     vector<float>::iterator iR;
 
     float maxel = *max_element(x.begin(), x.end());
