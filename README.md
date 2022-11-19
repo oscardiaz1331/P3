@@ -49,6 +49,8 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
       (r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
       autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
 
+      <img src="wave1.png" width="640" align="center">
+
     Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
     Recuerde configurar los paneles de datos para que el desplazamiento de ventana sea el adecuado, que
@@ -57,6 +59,8 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
     - Use el estimador de pitch implementado en el programa `wavesurfer` en una señal de prueba y compare
       su resultado con el obtenido por la mejor versión de su propio sistema. Inserte una gráfica
       ilustrativa del resultado de ambos estimadores.
+
+      <img src="wave2.png" width="640" align="center">
 
     Aunque puede usar el propio Wavesurfer para obtener la representación, se valorará
     el uso de alternativas de mayor calidad (particularmente Python).
