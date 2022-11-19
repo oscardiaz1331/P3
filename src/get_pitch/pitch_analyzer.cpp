@@ -21,7 +21,7 @@ namespace upc {
       for (unsigned int n = 0; n < x.size(); ++n){
         r[l]=r[l]+x[n]*x[n+l];
       }
-      r[l]=r[l]/x.size();//revisar
+      r[l]=r[l]/x.size();
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -67,18 +67,12 @@ namespace upc {
     ///  (rmaxnorm>umaxnorm) or (r1norm<u1norm) or (upot<pot)
     /// if((rmaxnorm>umaxnorm)) return false; 87.41% --> 0.55
     /// if((r1norm>u1norm)) return false; 83.11% --> 0.85
-    if((rmaxnorm>umaxnorm)){
-        if((r1norm>u1norm)){
-            if((upot<pot)){
-              return true;
-            }
-            return false;
-        }
-        return true;
-    } 
+    if(rmaxnorm>umaxnorm && r1norm>u1norm)return false;
+    else if(rmaxnorm>umaxnorm && pot>upot) return false;
+    else if(r1norm>u1norm && pot>upot)return false;
     return true;
   }
-
+  
   float PitchAnalyzer::compute_pitch(vector<float> & x) const {
     if (x.size() != frameLen)
       return -1.0F;

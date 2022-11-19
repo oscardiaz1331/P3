@@ -73,14 +73,16 @@ int main(int argc, const char *argv[]) {
   /// Preprocess the input signal in order to ease pitch estimation. For instance,
   /// central-clipping or low pass filtering may be used.
   /// central-clipping
+  vector<float>::iterator iR;
+  
   float maxel = *max_element(x.begin(), x.end());
   float umbral=coef1*maxel;
-  vector<float>::iterator iR;
-   /* for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+  
+    for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
     if((umbral*-1<*iR) && (*iR<umbral)){
         *iR=0;
     }
-  }  */
+  }  
    for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
@@ -89,12 +91,13 @@ int main(int argc, const char *argv[]) {
         }
     }
     float umbral2=coef2*valormax;
-    /* for(int j=0;j<n_len;j++){
+     for(int j=0;j<n_len;j++){
       if((umbral2*-1<x[i+j]) and (x[i+j]<umbral2)){
         x[i+j]=0;
       }
-    } */
+    } 
   } 
+  
   // Iterate for each frame and save values in f0 vector
   vector<float>::iterator iX;
   vector<float> f0;
