@@ -121,14 +121,21 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
 
     /// center clipping
     vector<float>::iterator iR;
+
     float maxel = *max_element(x.begin(), x.end());
+
     float umbral=coef1*maxel;
 
     for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
+
     if((umbral*-1<*iR) && (*iR<umbral)){
+
     *iR=0;
+
     }
+
     }
+    
     for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
     float valormax=x[i];
     for(int j=0;j<n_len;j++){
