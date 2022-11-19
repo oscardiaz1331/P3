@@ -13,26 +13,16 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
 
   - Complete el cálculo de la autocorrelación e inserte a continuación el código correspondiente.
 
-    void PitchAnalyzer::autocorrelation(const vector<float> &x, vector<float> &r) const {
-    for (unsigned int l = 0; l < r.size(); ++l) {
-    /// \TODO Compute the autocorrelation r[l]
-    /// - Inicializamos la autocorrelación a cero
-    /// - Añadimos el producto
-    /// - Normalizamos con la duración
-    ///
-    /// **_ Amazing! _**
-    for (unsigned int n = 0; n < x.size(); ++n){
-    r[l]=r[l]+x[n]\*x[n+l];
-    }
-    r[l]=r[l]/x.size();//revisar
-    }
-    if (r[0] == 0.0F) //to avoid log() and divide zero
-    r[0] = 1e-10;
-    }
+    <img src="im1.png" width="640" align="center">
 
   - Inserte una gŕafica donde, en un _subplot_, se vea con claridad la señal temporal de un segmento de
     unos 30 ms de un fonema sonoro y su periodo de pitch; y, en otro _subplot_, se vea con claridad la
     autocorrelación de la señal y la posición del primer máximo secundario.
+
+
+
+
+
 
   NOTA: es más que probable que tenga que usar Python, Octave/MATLAB u otro programa semejante para
   hacerlo. Se valorará la utilización de la biblioteca matplotlib de Python.
@@ -40,30 +30,11 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
   - Determine el mejor candidato para el periodo de pitch localizando el primer máximo secundario de la
     autocorrelación. Inserte a continuación el código correspondiente.
 
-    vector<float>::const_iterator iR = r.begin(), iRMax = iR;
-    /// Find the lag of the maximum value of the autocorrelation away from the origin.<br>
-    /// Choices to set the minimum value of the lag are:
-    /// - The first negative value of the autocorrelation.
-    /// - The lag corresponding to the maximum value of the pitch.
-    /// .
-    /// In either case, the lag should not exceed that of the minimum value of the pitch.
-    for(iRMax=iR=r.begin()+npitch_min;iR<r.begin()+npitch_max;iR++){
-    if(*iR>*iRMax){
-    iRMax=iR;
-    }
-    }
+    <img src="im2.png" width="640" align="center">
 
   - Implemente la regla de decisión sonoro o sordo e inserte el código correspondiente.
 
-    bool PitchAnalyzer::unvoiced(float pot, float r1norm, float rmaxnorm) const {
-    /// \TODO Implement a rule to decide whether the sound is voiced or not.
-    /// \* You can use the standard features (pot, r1norm, rmaxnorm),
-    /// or compute and use other ones.
-    if((rmaxnorm>umaxnorm) && (r1norm>u1norm)) return false;
-    else if((rmaxnorm>umaxnorm) && (upot<pot)) return false;
-    else if((r1norm>u1norm) && (upot<pot)) return false;
-    else return true;
-    }
+    <img src="im3.png" width="640" align="center">
 
   - Puede serle útil seguir las instrucciones contenidas en el documento adjunto `código.pdf`.
 
@@ -119,45 +90,11 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
 
   - Técnicas de preprocesado: filtrado paso bajo, diezmado, _center clipping_, etc.
 
-    /// center clipping "\n"
-    vector<float>::iterator iR;
-
-    float maxel = *max_element(x.begin(), x.end());
-    float umbral=coef1*maxel;
-    for (iR=x.begin(); iR+n_len<x.end(); iR=iR+n_shift) {
-      if((umbral*-1<*iR) && (*iR<umbral)){
-        *iR=0;
-      }
-    }
-
-    for(int i = 0; i + n_len < int(x.size())-1; i = i + n_shift){
-    float valormax=x[i];
-    for(int j=0;j<n_len;j++){
-    if(x[j+i]>valormax){
-    valormax=x[j+i];
-    }
-    }
-    float umbral2=coef2*valormax;
-    for(int j=0;j<n_len;j++){
-    if((umbral2*-1<x[i+j]) and (x[i+j]<umbral2)){
-    x[i+j]=0;
-    }
-    }
-    }
-
+    <img src="im4.png" width="640" align="center">
+    
   - Técnicas de postprocesado: filtro de mediana, _dynamic time warping_, etc.
 
-    /// filtro de mediana
-    vector<float> f0mediana;
-    f0mediana=f0;
-    f0mediana.begin()=f0.begin();
-    int j=1;
-    for(iR=f0.begin()+1; iR< f0.end()-1;iR = iR + 1,j=j+1){
-    if((_(iR-1)<=_(iR) and _(iR)<=_(iR+1)) or (*(iR+1)<=*iR and _iR<=_(iR-1))) f0mediana[j]=*iR;
-    else if((*iR<=_(iR-1) and _(iR-1)<=_(iR+1))or (_(iR+1)<=_(iR-1) and _(iR-1)<=_iR)) f0mediana[j]=_(iR-1);
-    else if((_(iR-1)<=_(iR+1) and *(iR+1)<=*iR) or (_iR<=_(iR+1) and _(iR+1)<=_(iR-1))) f0mediana[j]=\*(iR+1);
-    }
-    f0mediana.end()=f0.end();
+    <img src="im5.png" width="640" align="center">
 
   - Métodos alternativos a la autocorrelación: procesado cepstral, _average magnitude difference function_
     (AMDF), etc.
@@ -173,6 +110,7 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
   inclusión de gráficas, tablas, código o cualquier otra cosa que ayude a comprender el trabajo realizado.
 
   - El resultado obtenido aplicando estas dos técnicas es el siguiente:
+
 
   <img src="summary2.png" width="640" align="center">
 

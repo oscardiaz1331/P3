@@ -21,7 +21,7 @@ namespace upc {
       for (unsigned int n = 0; n < x.size(); ++n){
         r[l]=r[l]+x[n]*x[n+l];
       }
-      r[l]=r[l]/x.size();//revisar
+      r[l]=r[l]/x.size();
     }
 
     if (r[0] == 0.0F) //to avoid log() and divide zero 
@@ -64,9 +64,6 @@ namespace upc {
     /// \TODO Implement a rule to decide whether the sound is voiced or not.
     /// * You can use the standard features (pot, r1norm, rmaxnorm),
     ///   or compute and use other ones.
-    ///  (rmaxnorm>umaxnorm) or (r1norm<u1norm) or (upot<pot)
-    /// if((rmaxnorm>umaxnorm)) return false; 87.41% --> 0.55
-    /// if((r1norm>u1norm)) return false; 83.11% --> 0.85
     if((rmaxnorm>umaxnorm) && (r1norm>u1norm)) return false;
     else if((rmaxnorm>umaxnorm) && (upot<pot)) return false; 
     else if((r1norm>u1norm) && (upot<pot)) return false;
