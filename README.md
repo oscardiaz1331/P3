@@ -46,7 +46,7 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
       (r[0]), la autocorrelación normalizada de uno (r1norm = r[1] / r[0]) y el valor de la
       autocorrelación en su máximo secundario (rmaxnorm = r[lag] / r[0]).
 
-      <img src="wave1.png" width="640" align="center">
+      <img src="potrx1rxlag.png" width="640" align="center">
 
     Puede considerar, también, la conveniencia de usar la tasa de cruces por cero.
 
@@ -90,12 +90,14 @@ Recuerde realizar el _pull request_ al repositorio original una vez completada l
   Entre las posibles mejoras, puede escoger una o más de las siguientes:
 
   - Técnicas de preprocesado: filtrado paso bajo, diezmado, _center clipping_, etc.
+    + Usaremos central-clipping, este consiste en declarar un coeficiente, que multiplicado por el valor máximo del tramo que vamos a procesar crea un umbral. Este umbral es comparado con el valor absoulto de la señal y si es menor, se pone a cero esa posición. Haremos este procedimiento dos veces, una para toda la señal global y otra para las tramas individuales.
 
     <img src="im4.png" width="640" align="center">
 
     <img src="clip.png" width="640" align="center">
     
   - Técnicas de postprocesado: filtro de mediana, _dynamic time warping_, etc.
+    + Usaremos un filtro de mediana de longitud tres. Este filtro consiste en comparar el valor de la muestra actual con el de la muestra anterior y posterior, ordenadorlos en orden ascendente/descendente (no importa), y quedarnos el que este en la posición central (el mediano).
 
     <img src="im5.png" width="640" align="center">
 
